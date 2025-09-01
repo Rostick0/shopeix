@@ -9,15 +9,15 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-type CategoryHandler struct {
+type Handler struct {
 	service *categoryService.Service
 }
 
-func NewCategoryHandler(service *categoryService.Service) *CategoryHandler {
-	return &CategoryHandler{service: service}
+func NewHandler(service *categoryService.Service) *Handler {
+	return &Handler{service: service}
 }
 
-func (h *CategoryHandler) GetCategory(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetCategory(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
@@ -35,7 +35,7 @@ func (h *CategoryHandler) GetCategory(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(u)
 }
 
-func (h *CategoryHandler) GetCategories(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetCategories(w http.ResponseWriter, r *http.Request) {
 	page := 1
 	if v, err := strconv.Atoi(r.URL.Query().Get("page")); err == nil && v > 0 {
 		page = v

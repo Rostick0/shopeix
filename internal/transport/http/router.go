@@ -2,12 +2,13 @@ package http
 
 import (
 	"app/internal/transport/http/category"
+	"app/internal/transport/http/product"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 )
 
-func NewRouter(CategoryHandler *category.CategoryHandler) http.Handler {
+func NewRouter(CategoryHandler *category.Handler, ProductHandler *product.Handler) http.Handler {
 	r := chi.NewRouter()
 
 	// маршруты для категории
@@ -15,6 +16,12 @@ func NewRouter(CategoryHandler *category.CategoryHandler) http.Handler {
 		r.Get("/", CategoryHandler.GetCategories)
 		r.Get("/{id}", CategoryHandler.GetCategory)
 		// r.Post("/", userHandler.Create)
+	})
+
+	r.Route("/products", func(r chi.Router) {
+		// r.Get("/", CategoryHandler.GetCategories)
+		// r.Get("/{id}", CategoryHandler.GetCategory)
+		r.Post("/", ProductHandler.Create)
 	})
 
 	// // маршруты для заказов

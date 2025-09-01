@@ -8,15 +8,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type CategoryGormRepo struct {
+type GormRepo struct {
 	db *gorm.DB
 }
 
-func NewCategoryGormRepo(db *gorm.DB) *CategoryGormRepo {
-	return &CategoryGormRepo{db: db}
+func NewGormRepo(db *gorm.DB) *GormRepo {
+	return &GormRepo{db: db}
 }
 
-func (r *CategoryGormRepo) FindByID(id int64) (*category.Category, error) {
+func (r *GormRepo) FindByID(id int64) (*category.Category, error) {
 	var category category.Category
 	if err := r.db.First(&category, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -27,17 +27,8 @@ func (r *CategoryGormRepo) FindByID(id int64) (*category.Category, error) {
 	return (&category), nil
 }
 
-func (r *CategoryGormRepo) FindAll(page int) (*[]category.Category, *pagination.Paginator, error) {
+func (r *GormRepo) FindAll(page int) (*[]category.Category, *pagination.Paginator, error) {
 	var categories []category.Category
-
-	// if err := r.db.Find(&categories).Error; err != nil {
-	// 	if errors.Is(err, gorm.ErrRecordNotFound) {
-	// 		return nil, nil // пользователь не найден
-	// 	}
-	// 	return nil, err // другая ошибка
-	// }
-
-	// r.db.Model()
 
 	p := &pagination.Paginator{Page: page, PerPage: 20}
 
@@ -51,7 +42,3 @@ func (r *CategoryGormRepo) FindAll(page int) (*[]category.Category, *pagination.
 
 	return &categories, p, nil
 }
-
-// func (r *CategoryGormRepo) Create(u *category.Category) error {
-// 	// реализация через GORM
-// }
