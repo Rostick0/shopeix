@@ -7,13 +7,19 @@ import (
 	entranslations "github.com/go-playground/validator/v10/translations/en"
 )
 
-func StructValidator[T any](dst *T) map[string]string {
-	var validate = validator.New()
-
+func InitLang(validate *validator.Validate) ut.Translator {
 	eng := en.New()
 	uni := ut.New(eng, eng)
 	trans, _ := uni.GetTranslator("en")
 	_ = entranslations.RegisterDefaultTranslations(validate, trans)
+
+	return trans
+}
+
+func StructValidator[T any](dst *T) map[string]string {
+	var validate = validator.New()
+
+	trans := InitLang(validate)
 
 	err := validate.Struct(dst)
 	if err == nil {

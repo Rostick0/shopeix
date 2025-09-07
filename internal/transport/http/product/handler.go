@@ -6,6 +6,7 @@ import (
 	"app/internal/utils/validation"
 	"encoding/json"
 	"net/http"
+	"strconv"
 )
 
 type Handler struct {
@@ -19,10 +20,11 @@ func NewHandler(service *productService.Service) *Handler {
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	var input product.CreateProductRequest
 
+	json.NewDecoder(r.Body).Decode(&input)
 	validationErrors := validation.StructValidator(&input)
+	w.Header().Set("Content-Type", "application/json")
 
 	if len(validationErrors) != 0 {
-		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		_ = json.NewEncoder(w).Encode(map[string]interface{}{
 			"errors": validationErrors,
@@ -37,12 +39,11 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	_ = json.NewEncoder(w).Encode(product)
 }
 
-// func (h *ProductHandler) GetCategory(w http.ResponseWriter, r *http.Request) {
+// func (h *Handler) GetCategory(w http.ResponseWriter, r *http.Request) {
 // 	idParam := chi.URLParam(r, "id")
 // 	id, err := strconv.ParseInt(idParam, 10, 64)
 // 	if err != nil {
@@ -60,24 +61,33 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 // 	_ = json.NewEncoder(w).Encode(u)
 // }
 
-// func (h *ProductHandler) GetCategories(w http.ResponseWriter, r *http.Request) {
-// 	page := 1
-// 	if v, err := strconv.Atoi(r.URL.Query().Get("page")); err == nil && v > 0 {
-// 		page = v
-// 	}
+func (h *Handler) GetList(w http.ResponseWriter, r *http.Request) {
+	var input product.GetListProductRequest
 
-// 	categories, p, err := h.service.FindAll(page)
+	// r.URL.Query().
+	// r.Context().Value(r.URL.Query())(&input)
+	// r.URL.Parse()
+	// r.URL.Query().Encode()
+	// input:=r.URL.Query()
+	// json.NewDecoder(r.URL.Query()).Decode(&input)
 
-// 	if err != nil {
-// 		http.Error(w, "category not found", http.StatusNotFound)
-// 		return
-// 	}
+	page := 1
+	if v, err := strconv.Atoi(r.URL.Query().Get("page")); err == nil && v > 0 {
+		page = v
+	}
 
-// 	response := map[string]interface{}{
-// 		"data": categories,
-// 		"meta": p,
-// 	}
+	products, p, err := h.service.FindAll(page)
 
-// 	w.Header().Set("Content-Type", "application/json")
-// 	_ = json.NewEncoder(w).Encode(response)
-// }
+	if err != nil {
+		http.Error(w, "product not found", http.StatusNotFound)
+		return
+	}
+
+	response := map[string]interface{}{
+		"data": products,
+		"meta": p,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(response)
+}
