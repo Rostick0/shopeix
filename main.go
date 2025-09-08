@@ -11,10 +11,17 @@ import (
 	ProductTransport "app/internal/transport/http/product"
 	"fmt"
 	"net/http"
+
+	"github.com/joho/godotenv"
 	// "github.com/go-playground/validator/v10
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		// log.Fatal("Error loading .env file")
+	}
+
 	db := database.Connect()
 	// validate := validator.New()
 

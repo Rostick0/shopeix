@@ -62,7 +62,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 // }
 
 func (h *Handler) GetList(w http.ResponseWriter, r *http.Request) {
-	var input product.GetListProductRequest
+	// var input product.GetListProductRequest
 
 	// r.URL.Query().
 	// r.Context().Value(r.URL.Query())(&input)
