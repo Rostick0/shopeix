@@ -16,14 +16,11 @@ import (
 	// "github.com/go-playground/validator/v10
 )
 
-func main() {
-	err := godotenv.Load()
-	if err != nil {
-		// log.Fatal("Error loading .env file")
-	}
+var serverPort = "8080"
 
+func main() {
+	godotenv.Load()
 	db := database.Connect()
-	// validate := validator.New()
 
 	categoryRepository := CategoryRepository.NewGormRepo(db)
 	categoryService := CategoryService.NewService(categoryRepository)
@@ -34,7 +31,6 @@ func main() {
 	productHandler := ProductTransport.NewHandler(productService)
 
 	r := TransportHttp.NewRouter(categoryHandler, productHandler)
-	// r.ListenAndServe()
-	fmt.Print("Start server: http://localhost:8080")
-	http.ListenAndServe(":8080", r)
+	fmt.Print("Start server: http://localhost:" + serverPort)
+	http.ListenAndServe(":"+serverPort, r)
 }

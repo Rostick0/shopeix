@@ -32,7 +32,7 @@ func (r *GormRepo) FindAll(page int) (*[]product.Product, *pagination.Paginator,
 
 	p := &pagination.Paginator{Page: page, PerPage: 20}
 
-	query := r.db.Model(&product.Product{})
+	query := r.db.Model(&product.Product{}).Where("is_show = ?", true)
 
 	_, err := p.Paginate(query, &producs)
 
