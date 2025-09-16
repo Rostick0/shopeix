@@ -23,9 +23,18 @@ type CreateProductRequest struct {
 	IsShow     bool
 }
 
+type UpdateProductRequest struct {
+	Title      *string  `validate:"required,min=2,max=255"`
+	OldPrice   *float32 `validate:"number,min=0"`
+	Price      *float32 `validate:"required,number,min=0"`
+	CategoryId *int64
+	IsShow     *bool
+}
+
 type GetListProductRequest struct {
-	Title      string  `validate:"required,min=2,max=255"`
+	Title      string  `validate:"min=2,max=255"`
 	OldPrice   float32 `validate:"number,min=0"`
 	Price      float32 `validate:"required,number,min=0"`
 	CategoryId *int64
+	IsShow     bool
 }

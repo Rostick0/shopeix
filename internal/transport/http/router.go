@@ -22,6 +22,8 @@ func NewRouter(CategoryHandler *category.Handler, ProductHandler *product.Handle
 		r.Get("/", ProductHandler.GetList)
 		// r.Get("/{id}", CategoryHandler.GetCategory)
 		r.Post("/", ProductHandler.Create)
+		r.Put("/{id}", ProductHandler.Update)
+		r.Patch("/{id}", ProductHandler.Update)
 	})
 
 	// // маршруты для заказов

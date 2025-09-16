@@ -48,3 +48,9 @@ func (r *GormRepo) Create(product *product.Product) (*product.Product, error) {
 
 	return (product), nil
 }
+
+func (r *GormRepo) Update(product *product.Product) (*product.Product, error) {
+	r.db.Save(&product)
+
+	return (product), nil
+}
