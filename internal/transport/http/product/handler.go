@@ -105,7 +105,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 
 	productFinded, err := h.service.FindByID(id)
 	if err != nil {
-		http.Error(w, "category not found", http.StatusNotFound)
+		http.Error(w, "post not found", http.StatusNotFound)
 		return
 	}
 
@@ -130,6 +130,31 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	_ = json.NewEncoder(w).Encode(product)
+}
+
+func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
+
+	idParam := chi.URLParam(r, "id")
+	id, err := strconv.ParseInt(idParam, 10, 64)
+	if err != nil {
+		http.Error(w, "invalid post id", http.StatusBadRequest)
+		return
+	}
+
+	productFinded, err := h.service.FindByID(id)
+	if err != nil {
+		http.Error(w, "post not found", http.StatusNotFound)
+		return
+	}
+
+	product, err := h.service.Delete(productFinded)
+
+	if err != nil {
+		http.Error(w, "failed to delete product", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 	_ = json.NewEncoder(w).Encode(product)
 }

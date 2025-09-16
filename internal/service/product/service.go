@@ -15,9 +15,13 @@ func NewService(repo *productRepository.GormRepo) *Service {
 	return &Service{repo: repo}
 }
 
-// func (s *Service) FindByID(id int64) (*category.Category, error) {
-// 	return s.repo.FindByID(id)
-// }
+func (s *Service) FindAll(page int) (*[]product.Product, *pagination.Paginator, error) {
+	return s.repo.FindAll(page)
+}
+
+func (s *Service) FindByID(id int64) (*product.Product, error) {
+	return s.repo.FindByID(id)
+}
 
 func (s *Service) Create(input *product.CreateProductRequest) (*product.Product, error) {
 	product := &product.Product{
@@ -53,10 +57,6 @@ func (s *Service) Update(input *product.UpdateProductRequest, productFinded *pro
 	return s.repo.Update(productFinded)
 }
 
-func (s *Service) FindAll(page int) (*[]product.Product, *pagination.Paginator, error) {
-	return s.repo.FindAll(page)
-}
-
-func (s *Service) FindByID(id int64) (*product.Product, error) {
-	return s.repo.FindByID(id)
+func (s *Service) Delete(productFinded *product.Product) (*product.Product, error) {
+	return s.repo.Delete(productFinded)
 }

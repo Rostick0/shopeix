@@ -24,13 +24,8 @@ func NewRouter(CategoryHandler *category.Handler, ProductHandler *product.Handle
 		r.Post("/", ProductHandler.Create)
 		r.Put("/{id}", ProductHandler.Update)
 		r.Patch("/{id}", ProductHandler.Update)
+		r.Delete("/{id}", ProductHandler.Delete)
 	})
-
-	// // маршруты для заказов
-	// r.Route("/orders", func(r chi.Router) {
-	//     r.Get("/{id}", orderHandler.GetOrder) // GET /orders/1
-	//     r.Post("/", orderHandler.Create)      // POST /orders
-	// })
 
 	r.Mount("/api", r)
 

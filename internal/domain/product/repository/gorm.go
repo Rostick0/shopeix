@@ -54,3 +54,9 @@ func (r *GormRepo) Update(product *product.Product) (*product.Product, error) {
 
 	return (product), nil
 }
+
+func (r *GormRepo) Delete(product *product.Product) (*product.Product, error) {
+	r.db.Delete(&product)
+
+	return (product), nil
+}
