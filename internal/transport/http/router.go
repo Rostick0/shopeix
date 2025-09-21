@@ -20,7 +20,7 @@ func NewRouter(CategoryHandler *category.Handler, ProductHandler *product.Handle
 
 	r.Route("/products", func(r chi.Router) {
 		r.Get("/", ProductHandler.GetList)
-		// r.Get("/{id}", CategoryHandler.GetCategory)
+		r.Get("/{id}", ProductHandler.GetOne)
 		r.Post("/", ProductHandler.Create)
 		r.Put("/{id}", ProductHandler.Update)
 		r.Patch("/{id}", ProductHandler.Update)

@@ -11,6 +11,11 @@ type Paginator struct {
 	TotalPages int64 `json:"total_pages"`
 }
 
+type PaginationFormat struct {
+	Data any
+	Meta *Paginator
+}
+
 func (p *Paginator) Paginate(db *gorm.DB, out interface{}) (*Paginator, error) {
 	var total int64
 	db.Count(&total)

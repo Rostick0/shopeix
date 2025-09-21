@@ -3,6 +3,7 @@ package product
 import (
 	"app/internal/domain/product"
 	productService "app/internal/service/product"
+	"app/internal/utils/pagination"
 	"app/internal/utils/validation"
 	"encoding/json"
 	"net/http"
@@ -18,14 +19,6 @@ type Handler struct {
 func NewHandler(service *productService.Service) *Handler {
 	return &Handler{service: service}
 }
-
-// func (h *Handler) GetCategory(w http.ResponseWriter, r *http.Request) {
-// 	idParam := chi.URLParam(r, "id")
-// 	id, err := strconv.ParseInt(idParam, 10, 64)
-// 	if err != nil {
-// 		http.Error(w, "invalid category id", http.StatusBadRequest)
-// 		return
-// 	}
 
 // 	u, err := h.service.FindByID(id)
 // 	if err != nil {
@@ -52,20 +45,31 @@ func (h *Handler) GetList(w http.ResponseWriter, r *http.Request) {
 		page = v
 	}
 
-	products, p, err := h.service.FindAll(page)
+	products, meta, _ := h.service.FindAll(page)
 
-	if err != nil {
-		http.Error(w, "product not found", http.StatusNotFound)
-		return
-	}
-
-	response := map[string]interface{}{
-		"data": products,
-		"meta": p,
-	}
+	response := pagination.PaginationFormat{Data: products, Meta: meta}
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(response)
+}
+
+func (h *Handler) GetOne(w http.ResponseWriter, r *http.Request) {
+	idParam := chi.URLParam(r, "id")
+	id, err := strconv.ParseInt(idParam, 10, 64)
+	w.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		http.Error(w, "invalid post id", http.StatusBadRequest)
+		return
+	}
+
+	productFinded, _ := h.service.FindByID(id)
+	if productFinded == nil {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode("product not found")
+		return
+	}
+
+	_ = json.NewEncoder(w).Encode(productFinded)
 }
 
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
