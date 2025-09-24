@@ -7,6 +7,10 @@ import (
 	entranslations "github.com/go-playground/validator/v10/translations/en"
 )
 
+type ErrorsFormat struct {
+	Errors map[string]string
+}
+
 func InitLang(validate *validator.Validate) ut.Translator {
 	eng := en.New()
 	uni := ut.New(eng, eng)
@@ -32,31 +36,3 @@ func StructValidator[T any](dst *T) map[string]string {
 	}
 	return errors
 }
-
-// StructValidator — общая функция валидации DTO
-// func StructValidator[T any](w http.ResponseWriter, r *http.Request, dst *T) bool {
-// 	// Декодим JSON
-// 	if err := json.NewDecoder(r.Body).Decode(dst); err != nil {
-// 		http.Error(w, "invalid request body", http.StatusBadRequest)
-// 		return false
-// 	}
-
-// 	// Валидируем
-// 	if err := validate.Struct(dst); err != nil {
-// 		validationErrors := err.(validator.ValidationErrors)
-// 		// resp := make(map[string]string)
-
-// 		// for _, fieldErr := range validationErrors {
-// 		// 	resp[fieldErr.Field()] = fieldErr.Tag()
-// 		// }
-
-// 		w.Header().Set("Content-Type", "application/json")
-// 		w.WriteHeader(http.StatusBadRequest)
-// 		_ = json.NewEncoder(w).Encode(map[string]interface{}{
-// 			"errors": validationErrors.Error(),
-// 		})
-// 		return false
-// 	}
-
-// 	return true
-// }

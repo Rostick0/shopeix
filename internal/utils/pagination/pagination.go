@@ -1,6 +1,9 @@
 package pagination
 
 import (
+	"net/http"
+	"strconv"
+
 	"gorm.io/gorm"
 )
 
@@ -37,4 +40,13 @@ func (p *Paginator) Paginate(db *gorm.DB, out interface{}) (*Paginator, error) {
 	p.TotalPages = (total + int64(p.PerPage) - 1) / int64(p.PerPage)
 
 	return p, nil
+}
+
+func GetPage(r *http.Request) int {
+	page := 1
+	if v, err := strconv.Atoi(r.URL.Query().Get("page")); err == nil && v > 0 {
+		page = v
+	}
+
+	return page
 }

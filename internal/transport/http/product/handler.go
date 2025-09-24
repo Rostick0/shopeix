@@ -40,10 +40,7 @@ func (h *Handler) GetList(w http.ResponseWriter, r *http.Request) {
 	// input:=r.URL.Query()
 	// json.NewDecoder(r.URL.Query()).Decode(&input)
 
-	page := 1
-	if v, err := strconv.Atoi(r.URL.Query().Get("page")); err == nil && v > 0 {
-		page = v
-	}
+	page := pagination.GetPage(r)
 
 	products, meta, _ := h.service.FindAll(page)
 
@@ -65,7 +62,9 @@ func (h *Handler) GetOne(w http.ResponseWriter, r *http.Request) {
 	productFinded, _ := h.service.FindByID(id)
 	if productFinded == nil {
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode("product not found")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"message": "product not found",
+		})
 		return
 	}
 
@@ -81,9 +80,9 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 
 	if len(validationErrors) != 0 {
 		w.WriteHeader(http.StatusBadRequest)
-		_ = json.NewEncoder(w).Encode(map[string]interface{}{
-			"errors": validationErrors,
-		})
+		json.NewEncoder(w).Encode(
+			validation.ErrorsFormat{Errors: validationErrors},
+		)
 		return
 	}
 

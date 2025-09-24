@@ -10,6 +10,11 @@ import (
 
 func NewRouter(CategoryHandler *category.Handler, ProductHandler *product.Handler) http.Handler {
 	r := chi.NewRouter()
+	// json.Middleware a := json.Middleware
+	//
+	// jsonMiddleware.
+	// r.Use(*jsonMiddleware) // устанавливаем заголовок для всех маршрутов
+	// http.Request.Header ("Content-Type", "application/json")
 
 	// маршруты для категории
 	r.Route("/categories", func(r chi.Router) {
@@ -19,6 +24,7 @@ func NewRouter(CategoryHandler *category.Handler, ProductHandler *product.Handle
 	})
 
 	r.Route("/products", func(r chi.Router) {
+		// w.Header().Set("Content-Type", "application/json")
 		r.Get("/", ProductHandler.GetList)
 		r.Get("/{id}", ProductHandler.GetOne)
 		r.Post("/", ProductHandler.Create)
